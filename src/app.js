@@ -251,8 +251,27 @@ class TitanBot extends Client {
     cron.schedule('0 6 * * *', runSafeTask('birthday_check', () => checkBirthdays(this)));
     cron.schedule('* * * * *', runSafeTask('giveaway_check', () => checkGiveaways(this)));
     cron.schedule('*/15 * * * *', runSafeTask('counter_update', () => this.updateAllCounters()));
-  }
+  cron.schedule('0 * * * *', async () => {
+    const loveMessages = [
+        'I love you ❤️',
+        'أحبك ❤️',
+        'I love you so much 💖',
+        'I adore you endlessly 💕',
+        'You mean everything to me 🌹',
+        'أحبك جدًا 💗',
+        'I’m always thinking of you 🫶',
+        'I love you more than words can say 💘'
+    ];
 
+    const message = loveMessages[Math.floor(Math.random() * loveMessages.length)];
+    const channel = await this.channels.fetch('1539793382518558791');
+
+    if (channel && channel.isTextBased()) {
+        await channel.send(message);
+        logger.info(`Sent love message: ${message}`);
+    }
+});
+}
   async updateAllCounters() {
     if (!this.db) {
       logger.warn('Database not available for counter updates');
